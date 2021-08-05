@@ -1,0 +1,39 @@
+﻿<VMContext VM="NewCustomerForm" TState="object" OnElementEvent="HandleElementEvent">
+    <d-modal id="_Dialog" header="New Customer" open="@isOpen" large="true" style="position: fixed">
+        <d-panel css="min-height: 22rem">
+            <d-tab>
+                <d-tab-item itemkey="person" label="Person">
+                    <PersonForm />
+                </d-tab-item>
+                <d-tab-item itemkey="phone" label="Phone">
+                    <PhoneForm />
+                </d-tab-item>
+                <d-tab-item itemkey="address" label="Address">
+                    <AddressForm />
+                </d-tab-item>
+            </d-tab>
+        </d-panel>
+        <footer>
+            <d-panel horizontal="true" right="true">
+                <d-button id="_Cancel" label="Cancel" cancel="true" secondary="true"></d-button>
+                <d-button id="Submit" label="Submit" submit="true"></d-button>
+            </d-panel>
+        </footer>
+    </d-modal>
+</VMContext>
+
+@code {
+  [Parameter] public EventCallback OnClosed { get; set; }
+
+   private string isOpen = "true";
+
+   private void HandleElementEvent(ElementEventArgs e)
+   {
+       if (e.TargetId == "_Cancel" || e.TargetId == "Submit")
+       {
+           isOpen = "false";
+           StateHasChanged();
+           _ = Task.Delay(250 /* wait for closing animation*/).ContinueWith(_ => OnClosed.InvokeAsync(EventCallback.Empty));
+       }
+   }
+}

@@ -1,0 +1,102 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Services\AFITop100.json" />
+    <Content Remove="Services\webstore.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Docs\Basics.md" />
+    <None Remove="Docs\CRUD.md" />
+    <None Remove="Docs\DI.md" />
+    <None Remove="Docs\DotNetClient.md" />
+    <None Remove="Docs\Examples\CompositeView.md" />
+    <None Remove="Docs\Examples\ControlTypes.md" />
+    <None Remove="Docs\Examples\Dashboard.md" />
+    <None Remove="Docs\Examples\Form.md" />
+    <None Remove="Docs\Examples\HelloWorld.md" />
+    <None Remove="Docs\Examples\SecurePage.md" />
+    <None Remove="Docs\Examples\SimpleList.md" />
+    <None Remove="Docs\Filter.md" />
+    <None Remove="Docs\Middleware.md" />
+    <None Remove="Docs\Multicast.md" />
+    <None Remove="Docs\Overview.md" />
+    <None Remove="Docs\Overview\DataFlow.md" />
+    <None Remove="Docs\Overview\GetStarted.md" />
+    <None Remove="Docs\Overview\Reactive.md" />
+    <None Remove="Docs\Premium\DotNetifyLoadTester.md" />
+    <None Remove="Docs\Premium\DotNetifyObserver.md" />
+    <None Remove="Docs\Premium\DotNetifyTesting.md" />
+    <None Remove="Docs\Scaleout.md" />
+    <None Remove="Docs\ScopedCss.md" />
+    <None Remove="Docs\Security.md" />
+    <None Remove="Docs\WebApiMode.md" />
+    <None Remove="pulse-ui\index.html" />
+    <None Remove="pulse-ui\section.html" />
+    <None Remove="pulse-ui\style.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="pulse-ui\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pulse-ui\section.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pulse-ui\style.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Docs\CRUD.md" />
+    <EmbeddedResource Include="Docs\Premium\DotNetifyLoadTester.md" />
+    <EmbeddedResource Include="Docs\Premium\DotNetifyObserver.md" />
+    <EmbeddedResource Include="Docs\Premium\DotNetifyTesting.md" />
+    <EmbeddedResource Include="Docs\Overview\Scaleout.md" />
+    <EmbeddedResource Include="Docs\ScopedCss.md" />
+    <EmbeddedResource Include="Docs\DI.md" />
+    <EmbeddedResource Include="Docs\DotNetClient.md" />
+    <EmbeddedResource Include="Docs\Examples\ControlTypes.md" />
+    <EmbeddedResource Include="Docs\Examples\CompositeView.md" />
+    <EmbeddedResource Include="Docs\Examples\Form.md" />
+    <EmbeddedResource Include="Docs\Examples\Dashboard.md" />
+    <EmbeddedResource Include="Docs\Examples\SecurePage.md" />
+    <EmbeddedResource Include="Docs\Examples\SimpleList.md" />
+    <EmbeddedResource Include="Docs\Examples\HelloWorld.md" />
+    <EmbeddedResource Include="Docs\Filter.md" />
+    <EmbeddedResource Include="Docs\Middleware.md" />
+    <EmbeddedResource Include="Docs\Multicast.md" />
+    <EmbeddedResource Include="Docs\Overview\Basics.md" />
+    <EmbeddedResource Include="Docs\Overview\DataFlow.md" />
+    <EmbeddedResource Include="Docs\Overview\GetStarted.md" />
+    <EmbeddedResource Include="Docs\Overview\Overview.md" />
+    <EmbeddedResource Include="Docs\Overview\Reactive.md" />
+    <EmbeddedResource Include="Docs\Security.md" />
+    <EmbeddedResource Include="Docs\WebApiMode.md" />
+    <EmbeddedResource Include="Services\AFITop100.json" />
+    <EmbeddedResource Include="Services\webstore.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+     <PackageReference Include="AspNet.Security.OpenIdConnect.Server" Version="2.0.0" />
+     <PackageReference Include="Bogus" Version="22.1.3" />
+     <PackageReference Include="DotNetify.Elements" Version="1.5.1" />
+     <PackageReference Include="DotNetify.Pulse" Version="1.0.0" />
+     <PackageReference Include="DotNetify.SignalR" Version="5.0.0" />
+     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
+     <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
+     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.1.5" />
+     <PackageReference Include="UAParser" Version="3.1.44" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Website.Client\Website.Client.csproj" />
+  </ItemGroup>      
+
+</Project>

@@ -1,0 +1,51 @@
+﻿@*Copyright 2020 Dicky Suryadi
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.*@
+
+@inject IStyleSheet StyleSheetLoader;
+
+<d-style css="@css">
+    @ChildContent
+</d-style>
+
+@code {
+   /// <summary>
+   /// Component where this StyleSheet component is in.  Its name is used to located the embedded resource that contains the style sheet to use.
+   /// </summary>
+   [Parameter] public object Context { get; set; }
+
+   /// <summary>
+   /// Name of the embedded resource that contains the style sheet to use.
+   /// </summary>
+   [Parameter] public string Name { get; set; }
+
+   /// <summary>
+   /// Occurs after the style sheet is loaded, to provide an opportunity to modify it before being applied.
+   /// </summary>
+   [Parameter] public Func<string, string> OnLoad { get; set; }
+
+   [Parameter] public RenderFragment ChildContent { get; set; }
+
+   private string css;
+
+   protected override void OnInitialized()
+   {
+        string resourceName = !string.IsNullOrWhiteSpace(Name) ? Name : Context?.GetType().Name;
+        if (!string.IsNullOrWhiteSpace(resourceName))
+        { 
+        this.css = StyleSheetLoader[resourceName];
+        if (OnLoad != null)
+            this.css = OnLoad(this.css);
+        }
+   }
+}

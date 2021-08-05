@@ -1,0 +1,14 @@
+﻿& {
+  max-width: 1268px;
+}
+
+section {
+  display: flex;
+  margin-bottom: 1rem;
+  > div {
+    flex: 1;
+    &:last-child {
+      margin-left: 1rem;
+    }
+  }
+}

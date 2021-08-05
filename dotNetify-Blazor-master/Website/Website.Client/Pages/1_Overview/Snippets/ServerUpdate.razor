@@ -1,0 +1,31 @@
+﻿<VMContext VM="ServerUpdate" TState="IServerUpdateState" OnStateChange="UpdateState">
+    <div>
+        <p>@state?.Greetings</p>
+        <input type="text" @bind="person.FirstName" />
+        <input type="text" @bind="person.LastName" />
+        <button @onclick="() => state.Submit(person)">Submit</button>
+    </div>
+</VMContext>
+
+@code {
+  private IServerUpdateState state;
+    private Person person = new Person();
+
+    public interface IServerUpdateState
+    {
+        string Greetings { get; set; }
+        void Submit(Person person);
+    }
+
+    public class Person
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
+    private void UpdateState(IServerUpdateState state)
+    {
+        this.state = state;
+        StateHasChanged();
+    }    
+}

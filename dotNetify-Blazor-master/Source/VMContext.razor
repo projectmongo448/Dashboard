@@ -1,0 +1,104 @@
+﻿@*Copyright 2020 Dicky Suryadi
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.*@
+
+@implements IDisposable
+@inject IVMProxy vm
+@typeparam TState
+
+<d-vm-context @ref="vm.ElementRef" options="@Options.Serialize(true)" vm="@VM">
+    @ChildContent
+</d-vm-context>
+
+@code {
+   /// <summary>
+   /// Name of the view model to connect with.
+   /// </summary>
+   [Parameter] public string VM { get; set; }
+
+   /// <summary>
+   /// Configuration options that can be sent along with request to connect to a server-side view model.
+   /// </summary>
+   [Parameter] public VMConnectOptions Options { get; set; }
+
+   /// <summary>
+   /// Enables web API mode.
+   /// </summary>
+   [Parameter] public bool WebApi { get; set; }
+
+   /// <summary>
+   /// Occurs on receiving state update from the server-side view model.
+   /// </summary>
+   [Parameter] public EventCallback<TState> OnStateChange { get; set; }
+
+   /// <summary>
+   /// Occurs on receiving a custom event from a DotNetify-Element's web component.
+   /// </summary>
+   [Parameter] public EventCallback<ElementEventArgs> OnElementEvent { get; set; }
+
+   /// <summary>
+   /// Occurs on receiving an exception from the server-side view model.
+   /// </summary>
+   [Parameter] public EventCallback<ExceptionEventArgs> OnException { get; set; }
+
+   [Parameter] public RenderFragment ChildContent { get; set; }
+
+   protected override void OnInitialized()
+   {
+       if (WebApi)
+       {
+           Options = Options ?? new VMConnectOptions();
+           Options.WebApi = true;
+       }
+   }
+
+   protected override async Task OnAfterRenderAsync(bool firstRender)
+   {
+       if (firstRender)
+       {
+           await vm.HandleStateChangeAsync<TState>(state => OnStateChange.InvokeAsync(state));
+           await vm.HandleElementEventAsync(args => HandleElementEvent(args));
+           await vm.HandleExceptionAsync(ex => HandleException(ex));
+       }
+   }
+
+   public void Dispose()
+   {
+       vm.Dispose();
+   }
+
+   public async Task DispatchAsync(string propertyName, object propertyValue = null)
+   {
+       await vm.DispatchAsync(propertyName, propertyValue);
+   }
+
+   public void HandleEvent(ElementReference elementRef, string eventName, Action eventHandler)
+   {
+       vm.HandleDomEventAsync<object>(eventName, elementRef, e => eventHandler?.Invoke());
+   }
+
+   public void HandleEvent<TEventArg>(ElementReference elementRef, string eventName, Action<TEventArg> eventHandler)
+   {
+       vm.HandleDomEventAsync<TEventArg>(eventName, elementRef, e => eventHandler?.Invoke(e));
+   }
+
+   private void HandleElementEvent(ElementEventArgs args)
+   {
+       OnElementEvent.InvokeAsync(args);
+   }
+
+   private void HandleException(ExceptionEventArgs args)
+   {
+       OnException.InvokeAsync(args);
+   }
+}

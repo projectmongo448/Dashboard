@@ -1,0 +1,41 @@
+﻿@inject IStyleSheet StyleSheet
+
+<d-card css="height: 100%">
+    <d-panel>
+        <h4>รายการสินค้า</h4>
+        @foreach (var activity in Activities)
+        {
+            <d-panel horizontal="true" css=@getCss(activity)>
+                <div>
+                    <span class="user-icon">@getInitial(activity.PersonName)</span>
+                    @activity.PersonName
+                </div>
+                <d-panel right="true" middle="true">
+                    <div>
+                        @activity.Status
+                        <span class="status-icon" />
+                    </div>
+                </d-panel>
+            </d-panel>
+        }
+    </d-panel>
+</d-card>
+
+@code {
+   [Parameter] public Dashboard.Activity[] Activities { get; set; }
+
+   private static readonly string[] statusColors = new string[] { "", "silver", "limegreen", "red", "gray", "orange" };
+   private static readonly string[] userIconColors = new string[] { "#00ce6f", "#a95df0", "#2ea7eb" };
+
+   private char getInitial(string name) => name.ToUpper()[0];
+
+   private string getCss(Dashboard.Activity activity)
+   {
+       string iconColor = userIconColors[getInitial(activity.PersonName) % 3];
+       string statusColor = statusColors[activity.StatusId];
+
+       return StyleSheet["ActivitiesCard"]
+           .Replace("$icon-color", iconColor)
+           .Replace("$status-color", statusColor);
+   }
+}

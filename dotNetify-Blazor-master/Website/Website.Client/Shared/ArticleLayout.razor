@@ -1,0 +1,34 @@
+﻿@inject IStyleSheet StyleSheet
+
+<VMContext VM="@VM" TState="object" OnStateChange="UpdateState">
+@if(state != null)
+{
+    <d-panel horizontal="true" css="@StyleSheet["ArticleLayout"]" gap="10%">
+        <d-panel class="article">
+            @ChildContent
+        </d-panel>
+        <d-panel css="width: 16%">
+            @if(!string.IsNullOrEmpty(Id))
+            {
+                <d-panel class="sidebar">
+                    <d-markdown-toc id="@Id"></d-markdown-toc>
+                </d-panel>
+            }
+        </d-panel>
+    </d-panel>
+}
+</VMContext>
+
+@code {
+   [Parameter] public string VM { get; set; }
+   [Parameter] public string Id { get; set; } = "Content";
+   [Parameter] public RenderFragment ChildContent { get; set; }
+
+   private object state;
+
+   private void UpdateState(object state)
+   {
+       this.state = state;
+       StateHasChanged();
+   }
+}

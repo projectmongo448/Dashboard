@@ -1,0 +1,41 @@
+﻿@page "/helloworld"
+
+<ExampleLayout VM="HelloWorldDoc">
+    <VMContext VM="HelloWorldVM" TState="IHelloWorldState" OnStateChange="UpdateState">
+    @if (state != null)
+    {
+        <StyleSheet Context="this">
+            <section>
+                <div>
+                    <label>First name:</label>
+                    <input type="text" class="form-control" @bind="state.FirstName">
+                </div>
+                <div>
+                    <label>Last name:</label>
+                    <input type="text" class="form-control" @bind="state.LastName">
+                </div>
+            </section>
+            <div>
+                Full name is <b>@state.FullName</b>
+            </div>
+        </StyleSheet> 
+    }
+    </VMContext>
+</ExampleLayout>
+
+@code {
+   private IHelloWorldState state;
+
+   public interface IHelloWorldState
+   {
+       [Watch] string FirstName { get; set; }
+       [Watch] string LastName { get; set; }
+       string FullName { get; set; }
+   }
+
+   private void UpdateState(IHelloWorldState state)
+   {
+       this.state = state;
+       StateHasChanged();
+   }
+}

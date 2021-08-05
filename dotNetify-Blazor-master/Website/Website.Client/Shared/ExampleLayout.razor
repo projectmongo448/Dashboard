@@ -1,0 +1,31 @@
+﻿@inject IStyleSheet StyleSheet
+
+<VMContext VM="@VM" TState="object" OnStateChange="UpdateState" OnElementEvent="HandleElementEvent">
+@if (state != null)
+{
+    <d-panel css="@(StyleSheet["ArticleLayout"] + "&{margin-left:6%}")">
+        <d-tab>
+    
+                @ChildContent
+        </d-tab>
+    </d-panel>
+}
+</VMContext>
+
+@code {
+   [Parameter] public string VM { get; set; }
+   [Parameter] public RenderFragment ChildContent { get; set; }
+
+   private object state;
+
+   private void UpdateState(object state)
+   {
+       this.state = state;
+       StateHasChanged();
+   }
+
+   private void HandleElementEvent(ElementEventArgs e)
+   {
+       System.Diagnostics.Trace.WriteLine(string.Format("{0} {1} {2}", e.EventName, e.EventArgs, e.TargetId));
+   }
+}

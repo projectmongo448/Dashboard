@@ -1,0 +1,50 @@
+﻿@inherits LayoutComponentBase
+@inject IStyleSheet StyleSheet
+@inject NavigationManager NavigationManager
+
+<d-main css="@StyleSheet["MainLayout"]">
+    <d-nav>
+        <d-panel nogap="true">
+            <GithubLink />
+            <SelectFramework />
+            <VMContext VM="MainNav" TState="object">
+                <d-nav-menu id="NavMenu" selected="@selectedRoute"></d-nav-menu>
+            </VMContext>
+        </d-panel>
+    </d-nav>
+    <d-header>
+        <d-nav-drawer-button css="margin-left: 1rem"></d-nav-drawer-button>
+        <div style="margin-left: 1rem">
+            <a href="@("/dashboard" + basePath)"><h1>IMFG</h1></a>
+        </div>
+        <MenuLinks />
+        <d-panel horizontal="true" center="true" middle="true" right="true" padding="1rem">
+            <TwitterLink />
+        </d-panel>
+    </d-header>
+    <d-section>
+        <d-panel>
+            @Body
+        </d-panel>
+    </d-section>
+    <d-footer>
+    <div class="license-notice">
+       <h3>C.S.I. Group</h3>
+        
+    </div>
+    </d-footer>
+</d-main>
+
+@code {
+  private readonly string dotNetifyIcon = Website.Client.Properties.Resources.DotNetifyIcon;
+   private readonly string basePath = "/";
+   private string selectedRoute;
+
+   protected override void OnInitialized()
+   {
+       this.selectedRoute = ToRouteId(NavigationManager.Uri);
+       NavigationManager.LocationChanged += (sender, e) => { selectedRoute = ToRouteId(e.Location); StateHasChanged(); };
+   }
+
+   private string ToRouteId(string uri) => this.basePath + NavigationManager.ToBaseRelativePath(uri);
+}

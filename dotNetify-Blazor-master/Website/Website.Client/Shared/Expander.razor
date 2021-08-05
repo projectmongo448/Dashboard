@@ -1,0 +1,10 @@
+﻿<StyleSheet Context="this">
+    <d-collapsible collapsed="true" label="@Label">
+        @ChildContent
+    </d-collapsible>
+</StyleSheet>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string Label { get; set; }
+}
