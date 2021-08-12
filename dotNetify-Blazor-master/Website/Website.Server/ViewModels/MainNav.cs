@@ -12,8 +12,17 @@ namespace Website.Server
          AddProperty("NavMenu", new NavMenu(
             new NavMenuItem[]
             {
-               
-               new NavRoute("Admin Dashboard", PATH_BASE + "/dashboard"),
+
+               new NavGroup
+               {
+                  Label = "ALLTrainMescla5D",
+                  Routes = new NavRoute[]
+                  {
+                       new NavRoute("Overview", PATH_BASE + "/"),
+                       new NavRoute("Dashboard", PATH_BASE + "/dashboard"),
+                  },
+                  IsExpanded = false
+               },
 
             })
          );

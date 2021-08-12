@@ -12,6 +12,8 @@ namespace Website.Server
       IObservable<string> Download { get; }
       IObservable<string> Upload { get; }
       IObservable<string> Latency { get; }
+
+      IObservable<string> Users { get; }
       IObservable<int[]> Traffic { get; }
       IObservable<int[]> ServerUsage { get; }
       IObservable<int[]> Utilization { get; }
@@ -39,15 +41,17 @@ namespace Website.Server
         private readonly Random _random = new Random();
         private readonly IMongoCollection<Product> _download;
         private readonly IMongoCollection<List> _list;
+        private readonly IMongoCollection<Mech> _Mech;
 
         public IObservable<string> Download { get; }
 
       public IObservable<string> Upload { get; }
 
       public IObservable<string> Latency { get; }
+        public IObservable<string> Users { get; }
 
 
-      public IObservable<int[]> Traffic { get; }
+        public IObservable<int[]> Traffic { get; }
 
       public IObservable<int[]> ServerUsage { get; }
 
@@ -61,40 +65,51 @@ namespace Website.Server
             var databaseMS = clientMS.GetDatabase("MyShop");
             _download = databaseMS.GetCollection<Product>("Order");
 
+            //var client = new MongoClient(MongoClientSettings.FromConnectionString("mongodb+srv://localhost:root@cluster0.q9nwx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"));
+            //var database = clientMS.GetDatabase("Manufacturing");
+            //_list = database.GetCollection<List>("warehouse");
+
             var client = new MongoClient(MongoClientSettings.FromConnectionString("mongodb+srv://localhost:root@cluster0.q9nwx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"));
-            var database = clientMS.GetDatabase("Manufacturing");
-            _list = database.GetCollection<List>("warehouse");
+            var database = client.GetDatabase("ALLtrainMescla5D");
+            _Mech = database.GetCollection<Mech>("machine");
+
 
             Download = Observable
             .Interval(TimeSpan.FromMilliseconds(600))
             .StartWith(0)
-            .Select(_ => $"{Profit()}");
+            .Select(_ => $"{volt()}");
 
          Upload = Observable
             .Interval(TimeSpan.FromMilliseconds(600))
             .StartWith(0)
-            .Select(_ => $"{Cost()}");
+            .Select(_ => $"{rotate()}");
 
          Latency = Observable
             .Interval(TimeSpan.FromMilliseconds(600))
             .StartWith(0)
-            .Select(_ => $"{Income()}");
+            .Select(_ => $"{pressure()}");
+
+            Users = Observable
+           .Interval(TimeSpan.FromMilliseconds(600))
+           .StartWith(0)
+           .Select(_ => $"{vibration()}");
 
 
-         Traffic = Observable
+            Traffic = Observable
             .Interval(TimeSpan.FromMilliseconds(600))
             .StartWith(0)
             .Select(_ => new int[] { GetData() });
 
-         ServerUsage = Observable
-            .Interval(TimeSpan.FromMilliseconds(400))
-            .StartWith(0)
-            .Select(_ => Enumerable.Range(1, 10).Select(i => _random.Next(1, 100)).ToArray());
+            ServerUsage = Observable
+               .Interval(TimeSpan.FromMilliseconds(400))
+               .StartWith(0)
+               .Select(_ => new int[] { volt(), rotate(), pressure(), vibration() });
 
-         Utilization = Observable
+            Utilization = Observable
             .Interval(TimeSpan.FromMilliseconds(800))
             .StartWith(0)
-            .Select(_ => Enumerable.Range(1, 3).Select(i => 10).ToArray());
+
+            .Select(_ => new int[] { volt(), rotate(), pressure(), vibration()});
 
             RecentActivity = Observable
             .Interval(TimeSpan.FromSeconds(2))
@@ -102,7 +117,7 @@ namespace Website.Server
             .Select(_ => GetRandomCustomer(customerRepository))
             .Select(customer => new Activity
             {
-               PersonName = $"{Product()}"
+               PersonName = ""
             })
             .StartWith(
                Enumerable.Range(1, 4)
@@ -128,39 +143,40 @@ namespace Website.Server
         private int GetData()
         {
             var codeProduct = _random.Next(1, 9);
-            var defineCost = _random.Next(1, 9);
-            var defineIncome = _random.Next(9, 15);
+            var definevolt = _random.Next(1, 9);
+            var definerotate = _random.Next(9, 15);
+            var definepressure = _random.Next(9, 15);
+            var definevibration = _random.Next(9, 15);
             //Insert
-            _list.InsertOne(new List { Product_Name = $"Product-{codeProduct}", Cost = defineCost , Income= defineIncome});
+            _Mech.InsertOne(new Mech { machineId = $"Machine-{codeProduct}", voltmean = definevolt , rotatemean= definerotate, pressuremean=definepressure,vibrationmean=definevibration});
 
-            var Cost = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Cost).Sum());
-            var Income = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Income).Sum());
+            //var Cost = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Cost).Sum());
+            //var Income = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Income).Sum());
+            var volt = Convert.ToInt32(_Mech.Find(upload => true).ToList().Select(s => s.voltmean).Last());
 
-
-            return Income - Cost;
+            return volt;
 
         }
-
-        private int Profit()
+        private int volt()
         {
-            var Cost = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Cost).Sum());
-            var Income = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Income).Sum());
-            return Income - Cost;
+            var volt = Convert.ToInt32(_Mech.Find(upload => true).ToList().Select(s => s.voltmean).Last());
+            return volt;
         }
-        private int Cost()
+        private int rotate()
         {
-            var Cost = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Cost).Sum());
-            return Cost;
+            var volt = Convert.ToInt32(_Mech.Find(upload => true).ToList().Select(s => s.rotatemean).Last());
+            return volt;
         }
-        private int Income()
+        private int pressure()
         {
-            var Income = Convert.ToInt32(_list.Find(upload => true).ToList().Select(s => s.Income).Sum());
-            return Income;
+            var volt = Convert.ToInt32(_Mech.Find(upload => true).ToList().Select(s => s.pressuremean).Last());
+            return volt;
         }
-        private string Product()
+        private int vibration()
         {
-            var Name = _list.Find(upload => true).ToList().Select(s => s.Product_Name).Last();
-            return Name;
+            var volt = Convert.ToInt32(_Mech.Find(upload => true).ToList().Select(s => s.vibrationmean).Last());
+            return volt;
         }
+
     }
 }
